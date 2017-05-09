@@ -43,7 +43,9 @@
 }
 
 -(void)hidePicker:(CDVInvokedUrlCommand*)command{
-    [self _hidePicker];
+    if (_containerPickView) {
+        [self _hidePicker];
+    }
 }
 
 -(void)destoryPicker:(CDVInvokedUrlCommand*)command{
@@ -61,11 +63,13 @@
 }
 
 -(void)_showPicker{
-    [UIView animateWithDuration:0.2 animations:^{
-        _containerPickView.frame = (CGRect){0,APP_SCREEN_HEIGHT-206, APP_SCREEN_WIDTH, 206};
-    } completion:^(BOOL finished) {
-        self.isPickViewVisible = YES;
-    }];
+    if (_containerPickView) {
+        [UIView animateWithDuration:0.2 animations:^{
+            _containerPickView.frame = (CGRect){0,APP_SCREEN_HEIGHT-206, APP_SCREEN_WIDTH, 206};
+        } completion:^(BOOL finished) {
+            self.isPickViewVisible = YES;
+        }];
+    }
 }
 
 -(void)_hidePicker{
