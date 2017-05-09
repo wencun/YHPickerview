@@ -24,6 +24,7 @@
     PickView *_containerPickView;
 }
 @property (assign, nonatomic)BOOL isPickViewVisible;
+@property (strong, nonatomic)YHPickerviewParams *param;
 @end
 
 @implementation YHPickerview
@@ -37,6 +38,7 @@
         param.column = [dict[@"column"] integerValue];
         param.selected = dict[@"selected"];
         
+        _param = param;
         [self createPicker];
         [self _showPicker];
     }
@@ -119,13 +121,21 @@
 
 - (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
 {
-    NSInteger number = 0;
+    NSInteger number = self.param.column;
     return number;
 }
 
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
-    return 0;
+    NSInteger number = 0;
+    if (component==0) {
+     
+    }else if (component==1){
+    
+    }else if (component==2){
+        
+    }
+    return number;
 }
 
 - (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
