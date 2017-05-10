@@ -7,8 +7,9 @@
 #define APP_SCREEN_WIDTH    (APP_SCREEN_BOUNDS.size.width)
 
 @interface YHPickerviewParams : NSObject
-@property (strong, nonatomic) NSDictionary *options;
-@property (assign, nonatomic) NSInteger column; // 有多少列
+@property (strong, nonatomic) NSString *title;
+@property (strong, nonatomic) NSArray *options;
+@property (assign, nonatomic) NSInteger depth; // 有多少列
 @property (strong, nonatomic) NSArray *selected; //选中
 
 @end
@@ -25,6 +26,7 @@
 }
 @property (assign, nonatomic)BOOL isPickViewVisible;
 @property (strong, nonatomic)YHPickerviewParams *param;
+@property (strong, nonatomic) NSMutableArray *curSelected;
 @end
 
 @implementation YHPickerview
@@ -34,11 +36,13 @@
     NSDictionary *dict  = [command argumentAtIndex:0 withDefault:nil];
     if (dict) {
         YHPickerviewParams *param = [[YHPickerviewParams alloc] init];
+        param.title = dict[@"title"];
         param.options = dict[@"options"];
-        param.column = [dict[@"column"] integerValue];
+        param.depth = [dict[@"depth"] integerValue];
         param.selected = dict[@"selected"];
         
         _param = param;
+        _curSelected = [param.selected mutableCopy];
         [self createPicker];
         [self _showPicker];
     }
@@ -66,11 +70,28 @@
 
 -(void)_showPicker{
     if (_containerPickView) {
+        _containerPickView.pickTitle.text = self.param.title;
+        [_pickView reloadAllComponents];
         [UIView animateWithDuration:0.2 animations:^{
             _containerPickView.frame = (CGRect){0,APP_SCREEN_HEIGHT-206, APP_SCREEN_WIDTH, 206};
         } completion:^(BOOL finished) {
             self.isPickViewVisible = YES;
         }];
+        
+        switch (self.param.depth) {
+            case 1:
+                [_pickView selectRow:[_curSelected[0] intValue] inComponent:0 animated:YES];
+                break;
+            case 2:
+                [_pickView selectRow:[_curSelected[0] intValue] inComponent:0 animated:YES];
+                [_pickView selectRow:[_curSelected[1] intValue] inComponent:0 animated:YES];
+                break;
+            case 3:
+                [_pickView selectRow:[_curSelected[0] intValue] inComponent:0 animated:YES];
+                [_pickView selectRow:[_curSelected[1] intValue] inComponent:0 animated:YES];
+                [_pickView selectRow:[_curSelected[3] intValue] inComponent:0 animated:YES];
+                break;
+        }
     }
 }
 
@@ -91,7 +112,9 @@
         _containerPickView.delegate = self;
         _containerPickView.backgroundColor = [UIColor whiteColor];
         _containerPickView.tag = 100;
+        _containerPickView.pickTitle.text = @"";
         [self.viewController.view addSubview:_containerPickView];
+        
     }
     
     if (!_pickView)
@@ -102,6 +125,7 @@
         _pickView.delegate = self;
         _pickView.dataSource = self;
         [_containerPickView addSubview:_pickView];
+        
     }
 }
 
@@ -121,7 +145,7 @@
 
 - (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
 {
-    NSInteger number = self.param.column;
+    NSInteger number = self.param.depth;
     return number;
 }
 
@@ -129,23 +153,71 @@
 {
     NSInteger number = 0;
     if (component==0) {
-     
+        number = [self.param.options count];
     }else if (component==1){
-    
+        int selectedIndex = [_curSelected[0] intValue];
+        number = [self.param.options[selectedIndex][@"options"] count];
     }else if (component==2){
-        
+        int selectedIndex0 = [_curSelected[0] intValue];
+        int selectedIndex1 = [_curSelected[1] intValue];
+        NSArray *component1Array = self.param.options[selectedIndex0][@"options"];
+        number = [component1Array[selectedIndex1][@"options"] count];
     }
     return number;
 }
 
 - (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
 {
-    return @"";
+    NSString *title = nil;
+    if (component==0) {
+        title = [self.param.options[row] objectForKey:@"text"];
+    }else if (component==1){
+        int selectedIndex = [_curSelected[0] intValue];
+        title = [self.param.options[selectedIndex][@"options"][row] objectForKey:@"text"];
+    }else if (component==2){
+        int selectedIndex0 = [_curSelected[0] intValue];
+        int selectedIndex1 = [_curSelected[1] intValue];
+        NSArray *component1Array = self.param.options[selectedIndex0][@"options"];
+        title = [component1Array[selectedIndex1][@"options"][row] objectForKey:@"text"];
+    }
+    return title;
 }
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
-   
+    
+    switch (self.param.depth) {
+        case 1:
+        {
+            self.curSelected[0] = @(row);
+        }
+            break;
+        case 2:
+        {
+            if (component==0) {
+                self.curSelected[0] = @(row);
+                [_pickView reloadComponent:1];
+            }else if (component==1){
+                self.curSelected[1] = @(row);
+            }
+        }
+            break;
+            
+        case 3:
+        {
+            if (component==0) {
+                self.curSelected[0] = @(row);
+                [_pickView reloadComponent:1];
+                [_pickView reloadComponent:2];
+            }else if (component==1){
+                self.curSelected[1] = @(row);
+                [_pickView reloadComponent:2];
+            }else if (component==2){
+                self.curSelected[2] = @(row);
+            }
+        }
+            break;
+    }
 }
 
 
