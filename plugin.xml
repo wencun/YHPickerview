@@ -17,5 +17,7 @@
         <header-file src="src/ios/PickView.h" />
         <source-file src="src/ios/PickView.m"/>
 
+        <resource-file src="src/ios/n_pick_cancle@2x.png" target="/" />
+
     </platform>
 </plugin>
