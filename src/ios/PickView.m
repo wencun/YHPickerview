@@ -47,10 +47,10 @@
     [viewTitle addSubview:self.pickTitle];
     
     
-//    UIButton * btnOK = [[UIButton alloc]initWithFrame:CGRectMake(viewTitle.width-60, 0, 60, 44)];
-//    [btnOK addTarget:self action:@selector(confirmChangeData:) forControlEvents:UIControlEventTouchUpInside];
-//    SetBtnImages(btnOK, @"n_pick_add.png", nil);
-//    [viewTitle addSubview:btnOK];
+    UIButton * btnOK = [[UIButton alloc]initWithFrame:CGRectMake(CGRectGetWidth(viewTitle.frame)-60, 0, 60, 44)];
+    [btnOK addTarget:self action:@selector(confirmChangeData:) forControlEvents:UIControlEventTouchUpInside];
+    [btnOK setImage:[UIImage imageNamed:@"n_pick_add.png"] forState:(UIControlStateNormal)];
+    [viewTitle addSubview:btnOK];
     
     UIButton * btnCencel = [[UIButton alloc]initWithFrame:CGRectMake(0, 0,60, 44)];
     [btnCencel addTarget:self action:@selector(canelChangeData:) forControlEvents:UIControlEventTouchUpInside];

@@ -7,6 +7,7 @@
 #define APP_SCREEN_WIDTH    (APP_SCREEN_BOUNDS.size.width)
 
 @interface YHPickerviewParams : NSObject
+@property (strong, nonatomic) NSString *pickerId;
 @property (strong, nonatomic) NSString *title;
 @property (strong, nonatomic) NSArray *options;
 @property (assign, nonatomic) NSInteger depth; // 有多少列
@@ -27,6 +28,7 @@
 @property (assign, nonatomic)BOOL isPickViewVisible;
 @property (strong, nonatomic)YHPickerviewParams *param;
 @property (strong, nonatomic) NSMutableArray *curSelected;
+@property (strong, nonatomic) NSString *callbackId;
 @end
 
 @implementation YHPickerview
@@ -36,6 +38,7 @@
     NSDictionary *dict  = [command argumentAtIndex:0 withDefault:nil];
     if (dict) {
         YHPickerviewParams *param = [[YHPickerviewParams alloc] init];
+        param.pickerId = dict[@"pickerId"];
         param.title = dict[@"title"];
         param.options = dict[@"options"];
         param.depth = [dict[@"depth"] integerValue];
@@ -45,6 +48,7 @@
         _curSelected = [param.selected mutableCopy];
         [self createPicker];
         [self _showPicker];
+        _callbackId = [command.callbackId copy];
     }
 }
 
@@ -52,6 +56,8 @@
     if (_containerPickView) {
         [self _hidePicker];
     }
+    
+    _callbackId = nil;
 }
 
 -(void)destoryPicker:(CDVInvokedUrlCommand*)command{
@@ -66,6 +72,8 @@
             _containerPickView = nil;
         }];
     }
+    
+    _callbackId = nil;
 }
 
 -(void)_showPicker{
@@ -84,12 +92,12 @@
                 break;
             case 2:
                 [_pickView selectRow:[_curSelected[0] intValue] inComponent:0 animated:YES];
-                [_pickView selectRow:[_curSelected[1] intValue] inComponent:0 animated:YES];
+                [_pickView selectRow:[_curSelected[1] intValue] inComponent:1 animated:YES];
                 break;
             case 3:
                 [_pickView selectRow:[_curSelected[0] intValue] inComponent:0 animated:YES];
-                [_pickView selectRow:[_curSelected[1] intValue] inComponent:0 animated:YES];
-                [_pickView selectRow:[_curSelected[3] intValue] inComponent:0 animated:YES];
+                [_pickView selectRow:[_curSelected[1] intValue] inComponent:1 animated:YES];
+                [_pickView selectRow:[_curSelected[2] intValue] inComponent:2 animated:YES];
                 break;
         }
     }
@@ -133,6 +141,39 @@
 
 -(void)toolBarDoneClick:(id)sender
 {
+    NSArray *selectedTextArray = nil;
+    switch (self.param.depth) {
+        case 1:
+        {
+            NSString *title = [self pickerView:_pickView titleForRow:[_curSelected[0] intValue] forComponent:0];
+            selectedTextArray = @[title];
+        }
+            break;
+        case 2:
+        {
+            NSString *title1 = [self pickerView:_pickView titleForRow:[_curSelected[0] intValue] forComponent:0];
+            NSString *title2 = [self pickerView:_pickView titleForRow:[_curSelected[1] intValue] forComponent:1];
+            selectedTextArray = @[title1, title2?:@""];
+        }
+            break;
+            
+        case 3:
+        {
+            NSString *title1 = [self pickerView:_pickView titleForRow:[_curSelected[0] intValue] forComponent:0];
+            NSString *title2 = [self pickerView:_pickView titleForRow:[_curSelected[1] intValue] forComponent:1];
+            NSString *title3 = [self pickerView:_pickView titleForRow:[_curSelected[2] intValue] forComponent:2];
+            selectedTextArray = @[title1, title2?:@"", title3?:@""];
+        }
+            break;
+    }
+    
+    NSDictionary *resultDict = @{
+                       @"pickerId":self.param.pickerId,
+                       @"selectedTextArray":selectedTextArray,
+                       @"selectedIndexArray":[_curSelected copy]
+                       };
+    [self sendResult:resultDict];
+    
     [self _hidePicker];
 }
 
@@ -220,5 +261,9 @@
     }
 }
 
+-(void)sendResult:(NSDictionary*) resultDict{
+    CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:resultDict];
+    [self.commandDelegate sendPluginResult:result callbackId:self.callbackId];
+}
 
 @end
