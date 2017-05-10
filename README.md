@@ -6,9 +6,7 @@
 * This plugin is built for Cordova with ARC.
 
 [![Screenshot](https://raw.githubusercontent.com/zhuifeng1017/YHPickerview/master/Screen%20Shot%201.png)](https://github.com/zhuifeng1017/YHPickerview)
-
 [![Screenshot](https://raw.githubusercontent.com/zhuifeng1017/YHPickerview/master/Screen%20Shot%202.png)](https://github.com/zhuifeng1017/YHPickerview)
-
 [![Screenshot](https://raw.githubusercontent.com/zhuifeng1017/YHPickerview/master/Screen%20Shot%203.png)](https://github.com/zhuifeng1017/YHPickerview)
 
 ## PLUGIN SETUP FOR IOS ##
