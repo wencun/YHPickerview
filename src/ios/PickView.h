@@ -1,6 +1,13 @@
+//
+//  PickView.h
+//  YHPickerview Cordova Plugin
+//
+//  Created by ZhaoMin/278269606@qq.com on 17/5/10.
+//  Copyright © 2016年 ZhaoMin.  All rights reserved.
+//
+
 
 #import <UIKit/UIKit.h>
-
 
 @protocol PickViewDelegate;
 

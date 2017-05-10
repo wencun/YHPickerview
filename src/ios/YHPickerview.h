@@ -1,11 +1,10 @@
 //
 //  YHPickerview.h
-//  test1
+//  YHPickerview Cordova Plugin
 //
-//  Created by ZhaoMin on 2017/5/9.
+//  Created by ZhaoMin/278269606@qq.com on 17/5/10.
+//  Copyright © 2016年 ZhaoMin.  All rights reserved.
 //
-//
-
 
 #import <Cordova/CDV.h>
 
