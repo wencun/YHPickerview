@@ -6,14 +6,16 @@
 * This plugin is built for Cordova with ARC.
 
 [![Screenshot](https://raw.githubusercontent.com/zhuifeng1017/YHPickerview/master/Screen%20Shot%201.png)](https://github.com/zhuifeng1017/YHPickerview)
+
 [![Screenshot](https://raw.githubusercontent.com/zhuifeng1017/YHPickerview/master/Screen%20Shot%202.png)](https://github.com/zhuifeng1017/YHPickerview)
+
 [![Screenshot](https://raw.githubusercontent.com/zhuifeng1017/YHPickerview/master/Screen%20Shot%203.png)](https://github.com/zhuifeng1017/YHPickerview)
 
 ## PLUGIN SETUP FOR IOS ##
     cordova plugin add https://github.com/zhuifeng1017/YHPickerview.git
 
 
-## JAVASCRIPT INTERFACE (IOS/ANDROID) ##
+## test js ##
 
     // After device ready, create a local alias
        //      -------------Pickerview usage begin--------------------------
@@ -174,3 +176,24 @@
         navagator.YHPickerview.showPicker(pickerParams, pickSuccess, pickFailure);
     }
     //      -------------Pickerview end--------------------------
+
+## test index.html  ##
+    <html>
+    <body>
+        <p>  </p>
+        <p>  </p>
+        <div id="pickResult"></div>
+        <div>
+            <p><button id="btn1" style="visibility: hidden">BankCard</button></p>
+            <p><button id="showPickerviewBtn1">Pickerview Depth 1</button></p>
+            <p><button id="showPickerviewBtn2">Pickerview Depth 2</button></p>
+            <p><button id="showPickerviewBtn3">Pickerview Depth 3</button></p>
+            
+            <p><button id="hidePickerviewBtn">hide Pickerview</button></p>
+            <p><button id="destoryPickerviewBtn">destory Pickerview</button></p>
+        </div>
+    </body>
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+    </html>
+ 
