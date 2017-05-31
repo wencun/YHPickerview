@@ -43,7 +43,7 @@
 {
     UIView * viewTitle = [[UIView alloc]initWithFrame:CGRectMake(0, 0,[UIScreen mainScreen].bounds.size.width, 44)];
 
-    viewTitle.backgroundColor = [UIColor colorWithRed:2/255.0f green:3/255.0f blue:4/255.0f alpha:1.0];
+    viewTitle.backgroundColor = [UIColor colorWithRed:245/255.0f green:245/255.0f blue:245/255.0f alpha:1.0];
     [self addSubview:viewTitle];
     
     
@@ -57,13 +57,16 @@
     
     UIButton * btnOK = [[UIButton alloc]initWithFrame:CGRectMake(CGRectGetWidth(viewTitle.frame)-60, 0, 60, 44)];
     [btnOK addTarget:self action:@selector(confirmChangeData:) forControlEvents:UIControlEventTouchUpInside];
-    [btnOK setImage:[UIImage imageNamed:@"n_pick_add.png"] forState:(UIControlStateNormal)];
+//    [btnOK setImage:[UIImage imageNamed:@"n_pick_add.png"] forState:(UIControlStateNormal)];
+    [btnOK setTitle:@"确定" forState:(UIControlStateNormal)];
+    [btnOK setTitleColor:[UIColor colorWithRed:5/255.0f green:125/255.0f blue:255/255.0f alpha:1.0] forState:(UIControlStateNormal)];
     [viewTitle addSubview:btnOK];
     
     UIButton * btnCencel = [[UIButton alloc]initWithFrame:CGRectMake(0, 0,60, 44)];
     [btnCencel addTarget:self action:@selector(canelChangeData:) forControlEvents:UIControlEventTouchUpInside];
-    [btnCencel setImage:[UIImage imageNamed:@"n_pick_cancle.png"] forState:(UIControlStateNormal)];
-    
+//    [btnCencel setImage:[UIImage imageNamed:@"n_pick_cancle.png"] forState:(UIControlStateNormal)];
+    [btnCencel setTitle:@"取消" forState:(UIControlStateNormal)];
+    [btnCencel setTitleColor:[UIColor colorWithRed:5/255.0f green:125/255.0f blue:255/255.0f alpha:1.0] forState:(UIControlStateNormal)];
     [viewTitle addSubview:btnCencel];
 }
 

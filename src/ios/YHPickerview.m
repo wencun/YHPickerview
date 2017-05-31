@@ -20,7 +20,7 @@
 @property (strong, nonatomic) NSArray *options;
 @property (assign, nonatomic) NSInteger depth; // 有多少列
 @property (strong, nonatomic) NSArray *selected; //选中
-
+@property (assign, nonatomic) BOOL isProvinceCity; //是否是省市联动。1为是，0为否
 @end
 
 @implementation YHPickerviewParams
@@ -46,11 +46,23 @@
     NSDictionary *dict  = [command argumentAtIndex:0 withDefault:nil];
     if (dict) {
         YHPickerviewParams *param = [[YHPickerviewParams alloc] init];
-        param.pickerId = dict[@"pickerId"];
-        param.title = dict[@"title"];
-        param.options = dict[@"options"];
-        param.depth = [dict[@"depth"] integerValue];
-        param.selected = dict[@"selected"];
+        param.isProvinceCity = [dict[@"isProvinceCity"] boolValue];
+        if (param.isProvinceCity) {
+            NSString *resPath = [[NSBundle mainBundle] pathForResource:@"province" ofType:@"json"];
+            NSArray *jsonArray = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:resPath] options:NSJSONReadingMutableContainers error:nil];
+            param.pickerId = @"";//dict[@"pickerId"];
+            param.title = @"";//dict[@"title"];
+            param.options = jsonArray;
+            param.depth = 3;
+            param.selected = @[@(0), @(0), @(0)];
+        }else{
+            param.pickerId = dict[@"pickerId"];
+            param.title = @"";//dict[@"title"];
+            param.options = dict[@"options"];
+            param.depth = [dict[@"depth"] integerValue];
+            param.selected = dict[@"selected"];
+        }
+        
         
         _param = param;
         _curSelected = [param.selected mutableCopy];
@@ -150,11 +162,15 @@
 -(void)toolBarDoneClick:(id)sender
 {
     NSArray *selectedTextArray = nil;
+    NSArray *selectedIDArray = nil;
     switch (self.param.depth) {
         case 1:
         {
             NSString *title = [self pickerView:_pickView titleForRow:[_curSelected[0] intValue] forComponent:0];
             selectedTextArray = @[title];
+            NSDictionary *optionDict = self.param.options[[_curSelected[0] intValue]];
+            NSString *titleId = [optionDict objectForKey:@"id"];
+            selectedIDArray = @[titleId];
         }
             break;
         case 2:
@@ -175,11 +191,14 @@
             break;
     }
     
-    NSDictionary *resultDict = @{
-                       @"pickerId":self.param.pickerId,
-                       @"selectedTextArray":selectedTextArray,
-                       @"selectedIndexArray":[_curSelected copy]
-                       };
+    NSMutableDictionary *resultDict = [NSMutableDictionary dictionary];
+    [resultDict setObject:self.param.pickerId forKey:@"pickerId"];
+    [resultDict setObject:selectedTextArray forKey:@"selectedTextArray"];
+    [resultDict setObject:[_curSelected copy] forKey:@"selectedIndexArray"];
+    
+    if (selectedIDArray) {
+        [resultDict setObject:selectedIDArray forKey:@"selectedIDArray"];
+    }
     [self sendResult:resultDict];
     
     [self _hidePicker];
@@ -227,7 +246,12 @@
         int selectedIndex0 = [_curSelected[0] intValue];
         int selectedIndex1 = [_curSelected[1] intValue];
         NSArray *component1Array = self.param.options[selectedIndex0][@"options"];
-        title = [component1Array[selectedIndex1][@"options"][row] objectForKey:@"text"];
+        if([component1Array[selectedIndex1][@"options"][row] isKindOfClass:[NSString class]]){
+            title = component1Array[selectedIndex1][@"options"][row];
+        }else{
+            title = [component1Array[selectedIndex1][@"options"][row] objectForKey:@"text"];
+        }
+        
     }
     return title;
 }
@@ -245,6 +269,7 @@
         {
             if (component==0) {
                 self.curSelected[0] = @(row);
+                self.curSelected[1] = @(0);
                 [_pickView reloadComponent:1];
             }else if (component==1){
                 self.curSelected[1] = @(row);
@@ -256,10 +281,13 @@
         {
             if (component==0) {
                 self.curSelected[0] = @(row);
+                self.curSelected[1] = @(0);
+                self.curSelected[2] = @(0);
                 [_pickView reloadComponent:1];
                 [_pickView reloadComponent:2];
             }else if (component==1){
                 self.curSelected[1] = @(row);
+                self.curSelected[2] = @(0);
                 [_pickView reloadComponent:2];
             }else if (component==2){
                 self.curSelected[2] = @(row);
