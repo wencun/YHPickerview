@@ -19,7 +19,8 @@
 
         <resource-file src="src/ios/n_pick_cancle@2x.png" target="/" />
         <resource-file src="src/ios/n_pick_add@2x.png" target="/" />
-
+        
+        <resource-file src="src/ios/province.json" target="/" />
 
     </platform>
 </plugin>
