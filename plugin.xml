@@ -16,11 +16,13 @@
 
         <header-file src="src/ios/PickView.h" />
         <source-file src="src/ios/PickView.m"/>
+        
+        <header-file src="src/ios/PopViewController.h" />
+        <source-file src="src/ios/PopViewController.m"/>
 
         <resource-file src="src/ios/n_pick_cancle@2x.png" target="/" />
         <resource-file src="src/ios/n_pick_add@2x.png" target="/" />
-        
-        <resource-file src="src/ios/province.json" target="/" />
 
+        <resource-file src="src/ios/province.json" target="/" />
     </platform>
 </plugin>
